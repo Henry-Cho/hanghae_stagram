@@ -3,7 +3,34 @@ import { Text, Button, Image, Input } from "../elements";
 import Upload from "../shared/Upload";
 import styled from "styled-components";
 
+import { useSelector, useDispatch } from "react-redux";
+
 const PostWrite = (props) => {
+  const is_login = useSelector((state) => state.user.is_login);
+  // 위에서 history 를 import 해주는 것이랑 어떤 차이가 있는가?
+  const { history } = props;
+  const [contents, setContents] = React.useState("");
+
+  const changeContents = (e) => {
+    setContents(e.target.value);
+  };
+
+  if (!is_login) {
+    return (
+      <React.Fragment>
+        <Text>앗! 잠깐!</Text>
+        <Text>로그인 후에만 글을 쓸 수 있어요!</Text>
+        <Button
+          _onClick={() => {
+            history.replace("/login");
+          }}
+        >
+          로그인 하러가기
+        </Button>
+      </React.Fragment>
+    );
+  }
+
   return (
     <PostWriteFrame>
       <Text margin="0px" size="36px" bold>
@@ -15,7 +42,12 @@ const PostWrite = (props) => {
       </Text>
       <Image shape="rectangle" />
 
-      <Input label="게시글 내용" placeholder="게시글 작성" multiLine />
+      <Input
+        _onChange={changeContents}
+        label="게시글 내용"
+        placeholder="게시글 작성"
+        multiLine
+      />
 
       <Button text="게시글 작성"></Button>
     </PostWriteFrame>
