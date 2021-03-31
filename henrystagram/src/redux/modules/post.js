@@ -12,8 +12,9 @@ const EDIT_POST = "EDIT_POST";
 const LOADING = "LOADING";
 const DELETE_POST = "DELETE_POST";
 
-const setPost = createAction(SET_POST, (post_list) => ({
+const setPost = createAction(SET_POST, (post_list, paging) => ({
   post_list,
+  paging,
 }));
 const addPost = createAction(ADD_POST, (post) => ({
   post,
@@ -28,17 +29,15 @@ const deletePost = createAction(DELETE_POST, (post_id, post_list) => ({
   post_list,
 }));
 
-//const deletePost = createAction()
-
 const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
 
 const initialState = {
   list: [],
-  //   paging: {
-  //     start: null,
-  //     next: null,
-  //     size: 3,
-  //   },
+  paging: {
+    start: null,
+    next: null,
+    size: 3,
+  },
   is_loading: false,
 };
 
@@ -50,10 +49,70 @@ const initialPost = {
   insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
 };
 
-const getPostFB = (start = null, size = 3) => {
+const getPostFB = (is_more = false, size = 3) => {
   return function (dispatch, getState, { history }) {
+    let is_loading = getState().post.is_loading;
+
+    if (is_loading) {
+      return;
+    }
+    let _paging = getState().post.paging;
+
+    if (_paging.start && !_paging.next) {
+      return;
+    }
+
+    dispatch(loading(true));
+
     const postDB = firestore.collection("post");
 
+    let query = postDB.orderBy("insert_dt", "desc");
+
+    if (is_more) {
+      query = query.startAt(_paging.next);
+    }
+
+    query
+      .limit(size + 1)
+      .get()
+      .then((docs) => {
+        console.log(docs.docs.length);
+        let paging = {
+          start: docs.docs[0],
+          next:
+            docs.docs.length === size + 1
+              ? docs.docs[docs.docs.length - 1]
+              : null,
+          size: size,
+        };
+
+        let post_list = [];
+        docs.forEach((doc) => {
+          let _post = doc.data();
+
+          let post = Object.keys(_post).reduce(
+            (acc, cur) => {
+              if (cur.indexOf("user_") !== -1) {
+                return {
+                  ...acc,
+                  user_info: { ...acc.user_info, [cur]: _post[cur] },
+                };
+              }
+              return { ...acc, [cur]: _post[cur] };
+            },
+            { id: doc.id, user_info: {} }
+          );
+          post_list.push(post);
+        });
+
+        if (paging.next !== null) {
+          post_list.pop();
+        }
+        console.log(paging);
+        dispatch(setPost(post_list, paging));
+      });
+
+    return;
     postDB.get().then((docs) => {
       let post_list = [];
       docs.forEach((doc) => {
@@ -372,6 +431,8 @@ export default handleActions(
     [SET_POST]: (state, action) =>
       produce(state, (draft) => {
         draft.list.push(...action.payload.post_list);
+        draft.paging = action.payload.paging;
+        draft.is_loading = false;
 
         draft.list = draft.list.reduce((acc, cur) => {
           if (acc.findIndex((a) => a.id === cur.id) === -1) {

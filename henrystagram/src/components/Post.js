@@ -48,6 +48,9 @@ const PostFrame = styled.div`
 
 const PostTitle = styled.div`
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
   border-bottom: 1px solid #dbdbdb;
 `;
 
