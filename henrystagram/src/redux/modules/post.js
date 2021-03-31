@@ -38,14 +38,15 @@ const initialState = {
 };
 
 const initialPost = {
-  user_info: {
-    user_name: "henry",
-    user_profile:
-      "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
-  },
+  // user_info: {
+  //   user_name: "henry",
+  //   user_profile:
+  //     "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
+  // },
   image_url:
     "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
   contents: "",
+  comment_cnt: 0,
   insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
 };
 
@@ -96,6 +97,39 @@ const getPostFB = (start = null, size = 3) => {
 //   insert_dt: _post.insert_dt,
 // };
 // post_list.push(post);
+
+const addPostFB = (contents = "") => {
+  return function (dispatch, getState, { history }) {
+    const postDB = firestore.collection("post");
+
+    const _user = getState().user.user;
+
+    const user_info = {
+      user_name: _user.user_name,
+      user_id: _user.uid,
+      user_profile: _user.user_profile,
+    };
+    const _post = {
+      ...initialPost,
+      contents: contents,
+      insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+    };
+
+    console.log({ ...user_info, ..._post });
+
+    postDB
+      .add({ ...user_info, ..._post })
+      .then((doc) => {
+        let post = { user_info, ..._post, id: doc.id };
+
+        dispatch(addPost(post));
+        history.replace("/");
+      })
+      .catch((err) => {
+        console.log("post 작성에 실패했습니다.");
+      });
+  };
+};
 
 // const editPostFB = (post_id = null, post = {}) => {
 //   return function (dispatch, getState, { history }) {
@@ -329,7 +363,7 @@ const actionCreators = {
   addPost,
   editPost,
   getPostFB,
-  //   addPostFB,
+  addPostFB,
   //   editPostFB,
   //   getOnePostFB,
 };

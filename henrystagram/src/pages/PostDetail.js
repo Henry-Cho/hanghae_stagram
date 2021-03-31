@@ -10,6 +10,8 @@ const PostDetail = (props) => {
   );
 };
 
-const PostDetailFrame = styled.div``;
+const PostDetailFrame = styled.div`
+  margin-top: 20px;
+`;
 
 export default PostDetail;
