@@ -13,6 +13,8 @@ const PostWrite = (props) => {
   const { history } = props;
   const [contents, setContents] = React.useState("");
 
+  const preview = useSelector((state) => state.image.preview);
+
   const changeContents = (e) => {
     setContents(e.target.value);
   };
@@ -46,7 +48,10 @@ const PostWrite = (props) => {
       <Text margin="0px" size="24px" bold>
         미리보기
       </Text>
-      <Image shape="rectangle" />
+      <Image
+        shape="rectangle"
+        src={preview ? preview : "http://via.placeholder.com/400x300"}
+      />
 
       <Input
         _onChange={changeContents}

@@ -13,6 +13,8 @@ const uploading = createAction(UPLOADING, (uploading) => ({ uploading }));
 const uploadImage = createAction(UPLOAD_IMAGE, (image_url) => ({ image_url }));
 const setPreview = createAction(SET_PREVIEW, (preview) => ({ preview }));
 
+// middleware actions
+
 function uploadImageFB(image) {
   return function (dispatch, getState, { history }) {
     dispatch(uploading(true));
