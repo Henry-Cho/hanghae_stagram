@@ -23,8 +23,9 @@ const editPost = createAction(EDIT_POST, (post_id, post) => ({
   post,
 }));
 
-const deletePost = createAction(DELETE_POST, (post_id) => ({
+const deletePost = createAction(DELETE_POST, (post_id, post_list) => ({
   post_id,
+  post_list,
 }));
 
 //const deletePost = createAction()
@@ -42,11 +43,6 @@ const initialState = {
 };
 
 const initialPost = {
-  // user_info: {
-  //   user_name: "henry",
-  //   user_profile:
-  //     "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
-  // },
   image_url:
     "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
   contents: "",
@@ -80,6 +76,31 @@ const getPostFB = (start = null, size = 3) => {
       console.log(post_list);
       dispatch(setPost(post_list));
     });
+  };
+};
+
+const deletePostFB = (post_id = null) => {
+  return function (dispatch, getState, { history }) {
+    if (!post_id) {
+      console.log("게시물 정보가 없어요!");
+      return;
+    }
+
+    const postDB = firestore.collection("post");
+    const before_deleted_post_list = getState().post.list;
+    postDB
+      .doc(post_id)
+      .delete()
+      .then(() => {
+        //console.log(after_deleted_post_list);
+        dispatch(deletePost(post_id, before_deleted_post_list));
+        window.alert("정상적으로 삭제되었습니다.");
+        history.replace("/");
+        console.log("Document successfully deleted!");
+      })
+      .catch((err) => {
+        console.log("삭제가 제대로 되지 않았습니당", err);
+      });
   };
 };
 
@@ -381,6 +402,14 @@ export default handleActions(
       produce(state, (draft) => {
         draft.is_loading = action.payload.is_loading;
       }),
+    [DELETE_POST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.list = action.payload.post_list.filter((l, idx) => {
+          if (l.id !== action.payload.post_id) {
+            return [...draft.list, l];
+          }
+        });
+      }),
   },
   initialState
 );
@@ -393,6 +422,8 @@ const actionCreators = {
   addPostFB,
   getOnePostFB,
   editPostFB,
+  deletePost,
+  deletePostFB,
 };
 
 export { actionCreators };

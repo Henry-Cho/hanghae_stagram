@@ -1,3 +1,4 @@
+import { normalizeUnits } from "moment";
 import React from "react";
 import styled from "styled-components";
 
@@ -12,6 +13,7 @@ const Grid = (props) => {
     padding,
     bg,
     children,
+    border,
   } = props;
 
   const styles = {
@@ -22,6 +24,7 @@ const Grid = (props) => {
     padding: padding,
     bg: bg,
     center: center,
+    border: border,
   };
 
   return (
@@ -45,6 +48,7 @@ Grid.defaultProps = {
   center: false,
   height: "100%",
   _onClick: () => {},
+  border: "none",
 };
 
 const GridBox = styled.div`
@@ -58,7 +62,8 @@ const GridBox = styled.div`
     props.is_flex
       ? `display: flex; align-items: center; justify-content: space-between`
       : ""};
-  ${(props) => (props.center ? `text-align: center` : "")}
+  ${(props) => (props.center ? `text-align: center` : "")};
+  border: ${(props) => props.border};
 `;
 
 export default Grid;

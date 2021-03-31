@@ -18,7 +18,13 @@ const Header = (props) => {
   if (is_login && is_session) {
     return (
       <React.Fragment>
-        <Grid height="14vh" bg="white" padding="14px" is_flex>
+        <Grid
+          height="14vh"
+          bg="white"
+          padding="14px"
+          is_flex
+          border={"1px solid #dbdbdb"}
+        >
           <Logo />
           <Grid width="40%" is_flex>
             <Button
@@ -35,7 +41,13 @@ const Header = (props) => {
   }
   return (
     <React.Fragment>
-      <Grid height="14vh" bg="white" padding="14px" is_flex>
+      <Grid
+        height="14vh"
+        bg="white"
+        padding="14px"
+        is_flex
+        border={"1px solid #dbdbdb"}
+      >
         <Logo />
         <Grid width="40%" is_flex>
           <Button
@@ -64,6 +76,10 @@ const Logo = styled.div`
   height: 100%;
   background-size: cover;
   background-position: center;
+`;
+
+const Border = styled.div`
+  border: 1px solid #dbdbdb;
 `;
 
 export default Header;

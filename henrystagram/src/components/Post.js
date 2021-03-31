@@ -34,31 +34,21 @@ const Post = (props) => {
   );
 };
 
-Post.defaultProps = {
-  user_info: {
-    user_name: "henry",
-    user_profile:
-      "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
-  },
-  image_url:
-    "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
-  contents: "고양이네요!",
-  comment_cnt: 10,
-  insert_dt: "2021-03-25 10:00:00",
-  is_me: false,
-};
+Post.defaultProps = {};
 
 const PostFrame = styled.div`
-  width: 80vw;
+  width: 50vw;
   height: 100%;
   background: white;
   padding: 12px 12px 20px 12px;
   margin-bottom: 20px;
+  border: 1px solid #dbdbdb;
   overflow: hidden;
 `;
 
 const PostTitle = styled.div`
   width: 100%;
+  border-bottom: 1px solid #dbdbdb;
 `;
 
 const PostContents = styled.div`
