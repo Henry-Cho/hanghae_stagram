@@ -5,16 +5,37 @@ import styled from "styled-components";
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
+import { actionCreators as imageActions } from "../redux/modules/image";
 
 const PostWrite = (props) => {
-  console.log(props);
   const dispatch = useDispatch();
+
+  const post_list = useSelector((state) => state.post.list);
+
   const is_login = useSelector((state) => state.user.is_login);
   // 위에서 history 를 import 해주는 것이랑 어떤 차이가 있는가?
   const { history } = props;
-  const [contents, setContents] = React.useState("");
 
   const preview = useSelector((state) => state.image.preview);
+
+  const post_id = props.match.params.id;
+  const is_edit = post_id ? true : false;
+  let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
+
+  // 수정 페이지 최초 진입 시에 기존에 있던 contents 가지고 오기
+  const [contents, setContents] = React.useState(_post ? _post.contents : "");
+
+  React.useEffect(() => {
+    if (is_edit && !_post) {
+      console.log("포스트 정보가 없어요!");
+      history.goBack();
+      return;
+    }
+
+    if (is_edit) {
+      dispatch(imageActions.setPreview(_post.image_url));
+    }
+  }, []);
 
   const changeContents = (e) => {
     setContents(e.target.value);
@@ -22,6 +43,10 @@ const PostWrite = (props) => {
 
   const addPost = () => {
     dispatch(postActions.addPostFB(contents));
+  };
+
+  const editPost = () => {
+    dispatch(postActions.editPostFB(post_id, { contents: contents }));
   };
 
   if (!is_login) {
@@ -43,7 +68,7 @@ const PostWrite = (props) => {
   return (
     <PostWriteFrame>
       <Text margin="0px" size="36px" bold>
-        게시글 작성
+        {is_edit ? "게시글 수정" : "게시글 작성"}
       </Text>
       <Upload />
       <Text margin="0px" size="24px" bold>
@@ -61,8 +86,11 @@ const PostWrite = (props) => {
         multiLine
         value={contents}
       />
-
-      <Button _onClick={addPost} text="게시글 작성"></Button>
+      {is_edit ? (
+        <Button _onClick={editPost} text="게시글 수정"></Button>
+      ) : (
+        <Button _onClick={addPost} text="게시글 작성"></Button>
+      )}
     </PostWriteFrame>
   );
 };

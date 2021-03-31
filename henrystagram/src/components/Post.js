@@ -16,7 +16,6 @@ const Post = (props) => {
         <PostTitle>
           <Text bold>{props.user_info.user_name}</Text>
           <Text bold>{props.insert_dt}</Text>
-          {props.is_me ? <Button>수정</Button> : ""}
         </PostTitle>
         <PostContents>
           <Text>{props.contents}</Text>

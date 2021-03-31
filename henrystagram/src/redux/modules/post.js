@@ -23,6 +23,10 @@ const editPost = createAction(EDIT_POST, (post_id, post) => ({
   post,
 }));
 
+const deletePost = createAction(DELETE_POST, (post_id) => ({
+  post_id,
+}));
+
 //const deletePost = createAction()
 
 const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
@@ -154,67 +158,67 @@ const addPostFB = (contents = "") => {
   };
 };
 
-// const editPostFB = (post_id = null, post = {}) => {
-//   return function (dispatch, getState, { history }) {
-//     if (!post_id) {
-//       console.log("게시물 정보가 없어요!");
-//       return;
-//     }
+const editPostFB = (post_id = null, post = {}) => {
+  return function (dispatch, getState, { history }) {
+    if (!post_id) {
+      console.log("게시물 정보가 없어요!");
+      return;
+    }
 
-//     const _image = getState().image.preview;
-//     const _post_idx = getState().post.list.findIndex((p) => p.id === post_id);
+    const _image = getState().image.preview;
+    const _post_idx = getState().post.list.findIndex((p) => p.id === post_id);
 
-//     const _post = getState().post.list[_post_idx];
+    const _post = getState().post.list[_post_idx];
 
-//     console.log(_post);
+    console.log(_post);
 
-//     const postDB = firestore.collection("post");
+    const postDB = firestore.collection("post");
 
-//     if (_image === _post.image_url) {
-//       postDB
-//         .doc(post_id)
-//         .update({ ...post })
-//         .then((doc) => {
-//           dispatch(editPost(post_id, { ...post }));
-//           history.replace("/");
-//         });
-//       return;
-//     } else {
-//       const user_id = getState().user.user.uid;
-//       const _upload = storage
-//         .ref(`images/${user_id}_${new Date().getTime()}`)
-//         .putString(_image, "data_url");
+    if (_image === _post.image_url) {
+      postDB
+        .doc(post_id)
+        .update({ ...post })
+        .then((doc) => {
+          dispatch(editPost(post_id, { ...post }));
+          history.replace("/");
+        });
+      return;
+    } else {
+      const user_id = getState().user.user.uid;
+      const _upload = storage
+        .ref(`images/${user_id}_${new Date().getTime()}`)
+        .putString(_image, "data_url");
 
-//       _upload
-//         .then((snapshot) => {
-//           snapshot.ref
-//             .getDownloadURL()
-//             .then((url) => {
-//               // url을 확인해봐요!
-//               console.log(url);
-//               dispatch(imageActions.uploadImage(url));
-//               return url;
-//             })
-//             .then((url) => {
-//               // return으로 넘겨준 값이 잘 넘어왔나요? :)
-//               // 다시 콘솔로 확인해주기!
-//               console.log(url);
-//               postDB
-//                 .doc(post_id)
-//                 .update({ ...post, image_url: url })
-//                 .then((doc) => {
-//                   dispatch(editPost(post_id, { ...post, image_url: url }));
-//                   history.replace("/");
-//                 });
-//             });
-//         })
-//         .catch((err) => {
-//           window.alert("앗! 이미지 업로드에 문제가 있어요!");
-//           console.log(err);
-//         });
-//     }
-//   };
-// };
+      _upload
+        .then((snapshot) => {
+          snapshot.ref
+            .getDownloadURL()
+            .then((url) => {
+              // url을 확인해봐요!
+              console.log(url);
+              dispatch(imageActions.uploadImage(url));
+              return url;
+            })
+            .then((url) => {
+              // return으로 넘겨준 값이 잘 넘어왔나요? :)
+              // 다시 콘솔로 확인해주기!
+              console.log(url);
+              postDB
+                .doc(post_id)
+                .update({ ...post, image_url: url })
+                .then((doc) => {
+                  dispatch(editPost(post_id, { ...post, image_url: url }));
+                  history.replace("/");
+                });
+            });
+        })
+        .catch((err) => {
+          window.alert("앗! 이미지 업로드에 문제가 있어요!");
+          console.log(err);
+        });
+    }
+  };
+};
 
 // const getPostFB = (start = null, size = 3) => {
 //   return function (dispatch, getState, { history }) {
@@ -388,6 +392,7 @@ const actionCreators = {
   getPostFB,
   addPostFB,
   getOnePostFB,
+  editPostFB,
 };
 
 export { actionCreators };

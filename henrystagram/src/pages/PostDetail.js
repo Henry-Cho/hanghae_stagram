@@ -4,9 +4,12 @@ import styled from "styled-components";
 import { Button } from "../elements";
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
-import user from "../redux/modules/user";
+import { actionCreators as userActions } from "../redux/modules/user";
 
 const PostDetail = (props) => {
+  const { history } = props;
+
+  console.log(props.match.params);
   const dispatch = useDispatch();
   const id = props.match.params.id;
   const user_info = useSelector((state) => state.user.user);
@@ -26,9 +29,21 @@ const PostDetail = (props) => {
 
   return (
     <PostDetailFrame>
-      {post && (
-        <Post {...post} is_me={post.user_info.user_id === user_info?.uid} />
+      {post && post.user_info.user_id === user_info?.uid ? (
+        <React.Fragment>
+          <Button
+            _onClick={() => {
+              history.push(`/write/${id}`);
+            }}
+          >
+            수정
+          </Button>{" "}
+          <Button>삭제</Button>
+        </React.Fragment>
+      ) : (
+        ""
       )}
+      {post && <Post {...post} />}
     </PostDetailFrame>
   );
 };
