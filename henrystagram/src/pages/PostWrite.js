@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
 
 const PostWrite = (props) => {
+  console.log(props);
   const dispatch = useDispatch();
   const is_login = useSelector((state) => state.user.is_login);
   // 위에서 history 를 import 해주는 것이랑 어떤 차이가 있는가?
