@@ -314,33 +314,33 @@ const addPostFB = (contents = "") => {
 //   };
 // };
 
-// const getOnePostFB = (id) => {
-//   return function (dispatch, getState, { history }) {
-//     const postDB = firestore.collection("post");
-//     postDB
-//       .doc(id)
-//       .get()
-//       .then((doc) => {
-//         console.log(doc);
-//         console.log(doc.data());
-//         let _post = doc.data();
+const getOnePostFB = (id) => {
+  return function (dispatch, getState, { history }) {
+    const postDB = firestore.collection("post");
+    postDB
+      .doc(id)
+      .get()
+      .then((doc) => {
+        console.log(doc);
+        console.log(doc.data());
+        let _post = doc.data();
 
-//         let post = Object.keys(_post).reduce(
-//           (acc, cur) => {
-//             if (cur.indexOf("user_") !== -1) {
-//               return {
-//                 ...acc,
-//                 user_info: { ...acc.user_info, [cur]: _post[cur] },
-//               };
-//             }
-//             return { ...acc, [cur]: _post[cur] };
-//           },
-//           { id: doc.id, user_info: {} }
-//         );
-//         dispatch(setPost([post]));
-//       });
-//   };
-// };
+        let post = Object.keys(_post).reduce(
+          (acc, cur) => {
+            if (cur.indexOf("user_") !== -1) {
+              return {
+                ...acc,
+                user_info: { ...acc.user_info, [cur]: _post[cur] },
+              };
+            }
+            return { ...acc, [cur]: _post[cur] };
+          },
+          { id: doc.id, user_info: {} }
+        );
+        dispatch(setPost([post]));
+      });
+  };
+};
 
 export default handleActions(
   {
@@ -387,8 +387,7 @@ const actionCreators = {
   editPost,
   getPostFB,
   addPostFB,
-  //   editPostFB,
-  //   getOnePostFB,
+  getOnePostFB,
 };
 
 export { actionCreators };

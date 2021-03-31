@@ -1,17 +1,22 @@
 import React from "react";
 import styled from "styled-components";
 import { Grid, Image, Text, Button } from "../elements/index";
-//import { history } from "../redux/configStore";
+import { history } from "../redux/configStore";
 
 const Post = (props) => {
   console.log(props);
   return (
     // 일단 로그인 & 로그인 안 할 때 두가지 경우의 기본값을 설정해주자고!
     <React.Fragment>
-      <PostFrame>
+      <PostFrame
+        onClick={() => {
+          history.push(`/post/${props.id}`);
+        }}
+      >
         <PostTitle>
           <Text bold>{props.user_info.user_name}</Text>
           <Text bold>{props.insert_dt}</Text>
+          {props.is_me ? <Button>수정</Button> : ""}
         </PostTitle>
         <PostContents>
           <Text>{props.contents}</Text>
