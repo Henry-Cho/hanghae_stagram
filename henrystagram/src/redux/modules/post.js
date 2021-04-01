@@ -45,9 +45,9 @@ const initialPost = {
   image_url:
     "https://cloudfour.com/examples/img-currentsrc/images/kitten-small.png",
   contents: "",
-  comment_cnt: 0,
   insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
   layoutOption: "a",
+  like_cnt: 0,
 };
 
 const getPostFB = (is_more = false, size = 3) => {
@@ -128,7 +128,6 @@ const deletePostFB = (post_id = null) => {
       .doc(post_id)
       .delete()
       .then(() => {
-        //console.log(after_deleted_post_list);
         dispatch(deletePost(post_id, before_deleted_post_list));
         window.alert("정상적으로 삭제되었습니다.");
         history.replace("/");

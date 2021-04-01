@@ -33,6 +33,10 @@ const PostWrite = (props) => {
       return;
     }
 
+    if (!is_edit) {
+      dispatch(imageActions.setPreview("http://via.placeholder.com/400x300"));
+    }
+
     if (is_edit) {
       dispatch(imageActions.setPreview(_post.image_url));
     }

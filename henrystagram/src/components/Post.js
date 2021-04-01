@@ -1,15 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Grid, Image, Text, Button } from "../elements/index";
 import { history } from "../redux/configStore";
+import { useDispatch, useSelector } from "react-redux";
+import { actionCreators as postActions } from "../redux/modules/post";
+import like, { actionCreators as likeActions } from "../redux/modules/like";
 
 const Post = (props) => {
   console.log(props);
-  console.log(props.layoutOption);
+
+  const dispatch = useDispatch();
+  const [is_like, setLike] = useState(false);
+  const user_info = useSelector((state) => state.user.user);
+  const user_list = useSelector((state) => state.like.user_list);
+
+  //const idx = user_list[props.id]
+
+  const add_like = () => {
+    dispatch(likeActions.addLikeFB(props.id));
+    setLike(true);
+  };
+
+  const delete_like = () => {
+    dispatch(likeActions.deleteLikeFB(props.id, user_list[props.id].id));
+    setLike(false);
+  };
+
+  React.useEffect(() => {
+    if (Object.keys(user_list).length === 0) {
+      dispatch(likeActions.getLikeFB(props.id, props.user_info.user_id));
+    }
+
+    if (!user_list[props.id]) {
+      return;
+    }
+    console.log(user_list[props.id], props.user_info.user_id);
+    if (user_list[props.id].user_id === props.user_info.user_id) {
+      setLike(true);
+    }
+  }, [user_list]);
+
+  console.log(user_list);
+
   return (
     // 일단 로그인 & 로그인 안 할 때 두가지 경우의 기본값을 설정해주자고!
-    <React.Fragment>
-      <PostFrame
+    <PostFrame>
+      <PostInnerFrame
         onClick={() => {
           history.push(`/post/${props.id}`);
         }}
@@ -46,14 +82,18 @@ const Post = (props) => {
             </PostImage>
           </Layout3>
         )}
-        <PostInfo>
-          <LikeButton>❤</LikeButton>
-          <Text margin="0" bold>
-            {props.comment_cnt}개
-          </Text>
-        </PostInfo>
-      </PostFrame>
-    </React.Fragment>
+      </PostInnerFrame>
+      <PostInfo>
+        {is_like ? (
+          <LikeButton onClick={delete_like}>💗</LikeButton>
+        ) : (
+          <LikeButton onClick={add_like}>🖤</LikeButton>
+        )}
+        <Text margin="0" bold>
+          {props.like_cnt}개
+        </Text>
+      </PostInfo>
+    </PostFrame>
   );
 };
 
@@ -68,6 +108,8 @@ const PostFrame = styled.div`
   border: 1px solid #dbdbdb;
   overflow: hidden;
 `;
+
+const PostInnerFrame = styled.div``;
 
 const PostTitle = styled.div`
   width: 100%;

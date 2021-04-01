@@ -32,7 +32,7 @@ const PostList = (props) => {
         is_loading={is_loading}
       >
         {post_list.map((p, idx) => {
-          return <Post key={p.id} {...p} />;
+          return <Post post_id={p.id} key={p.id} {...p} />;
         })}
       </InfinityScroll>
     </PostListFrame>
