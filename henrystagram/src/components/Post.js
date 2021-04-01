@@ -5,6 +5,7 @@ import { history } from "../redux/configStore";
 
 const Post = (props) => {
   console.log(props);
+  console.log(props.layoutOption);
   return (
     // 일단 로그인 & 로그인 안 할 때 두가지 경우의 기본값을 설정해주자고!
     <React.Fragment>
@@ -17,12 +18,34 @@ const Post = (props) => {
           <Text bold>{props.user_info.user_name}</Text>
           <Text bold>{props.insert_dt}</Text>
         </PostTitle>
-        <PostContents>
-          <Text>{props.contents}</Text>
-        </PostContents>
-        <PostImage>
-          <Image shape="rectangle" src={props.image_url} />
-        </PostImage>
+        {props.layoutOption === "a" ? (
+          <Layout1>
+            <PostContents>
+              <Text>{props.contents}</Text>
+            </PostContents>
+            <PostImage>
+              <Image shape="rectangle" src={props.image_url} />
+            </PostImage>
+          </Layout1>
+        ) : props.layoutOption === "b" ? (
+          <Layout2>
+            <PostContents>
+              <Text>{props.contents}</Text>
+            </PostContents>
+            <PostImage>
+              <Image shape="rectangle" src={props.image_url} />
+            </PostImage>
+          </Layout2>
+        ) : (
+          <Layout3>
+            <PostContents>
+              <Text>{props.contents}</Text>
+            </PostContents>
+            <PostImage>
+              <Image shape="rectangle" src={props.image_url} />
+            </PostImage>
+          </Layout3>
+        )}
         <PostInfo>
           <LikeButton>❤</LikeButton>
           <Text margin="0" bold>
@@ -77,6 +100,17 @@ const LikeButton = styled.button`
   :focus {
     outline: none;
   }
+`;
+
+const Layout1 = styled.div``;
+
+const Layout2 = styled.div`
+  display: flex;
+`;
+
+const Layout3 = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
 `;
 
 export default Post;

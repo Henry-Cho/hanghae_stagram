@@ -2,6 +2,7 @@ import React from "react";
 import { Text, Button, Image, Input } from "../elements";
 import Upload from "../shared/Upload";
 import styled from "styled-components";
+import Radio from "@material-ui/core/Radio";
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
@@ -42,11 +43,22 @@ const PostWrite = (props) => {
   };
 
   const addPost = () => {
-    dispatch(postActions.addPostFB(contents));
+    dispatch(postActions.addPostFB(contents, selectedValue));
   };
 
   const editPost = () => {
-    dispatch(postActions.editPostFB(post_id, { contents: contents }));
+    dispatch(
+      postActions.editPostFB(post_id, {
+        contents: contents,
+        layoutOption: selectedValue,
+      })
+    );
+  };
+
+  const [selectedValue, setSelectedValue] = React.useState("a");
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
   };
 
   if (!is_login) {
@@ -74,18 +86,78 @@ const PostWrite = (props) => {
       <Text margin="0px" size="24px" bold>
         미리보기
       </Text>
-      <Image
-        shape="rectangle"
-        src={preview ? preview : "http://via.placeholder.com/400x300"}
-      />
+      {selectedValue === "a" ? (
+        <Layout1>
+          <Image
+            shape="rectangle"
+            src={preview ? preview : "http://via.placeholder.com/400x300"}
+          />
 
-      <Input
-        _onChange={changeContents}
-        label="게시글 내용"
-        placeholder="게시글 작성"
-        multiLine
-        value={contents}
-      />
+          <Input
+            _onChange={changeContents}
+            label="게시글 내용"
+            placeholder="게시글 작성"
+            multiLine
+            value={contents}
+          />
+        </Layout1>
+      ) : selectedValue === "b" ? (
+        <Layout2>
+          <Image
+            shape="rectangle"
+            src={preview ? preview : "http://via.placeholder.com/400x300"}
+          />
+
+          <Input
+            _onChange={changeContents}
+            label="게시글 내용"
+            placeholder="게시글 작성"
+            multiLine
+            value={contents}
+          />
+        </Layout2>
+      ) : (
+        <Layout3>
+          <Image
+            shape="rectangle"
+            src={preview ? preview : "http://via.placeholder.com/400x300"}
+          />
+
+          <Input
+            _onChange={changeContents}
+            label="게시글 내용"
+            placeholder="게시글 작성"
+            multiLine
+            value={contents}
+          />
+        </Layout3>
+      )}
+
+      <RadioBox>
+        <div>
+          <Radio
+            checked={selectedValue === "a"}
+            onChange={handleChange}
+            value="a"
+            name="radio-button-demo"
+            inputProps={{ "aria-label": "A" }}
+          />
+          <Radio
+            checked={selectedValue === "b"}
+            onChange={handleChange}
+            value="b"
+            name="radio-button-demo"
+            inputProps={{ "aria-label": "B" }}
+          />
+          <Radio
+            checked={selectedValue === "c"}
+            onChange={handleChange}
+            value="c"
+            name="radio-button-demo"
+            inputProps={{ "aria-label": "C" }}
+          />
+        </div>
+      </RadioBox>
       {is_edit ? (
         <Button _onClick={editPost} text="게시글 수정"></Button>
       ) : (
@@ -96,10 +168,25 @@ const PostWrite = (props) => {
 };
 
 const PostWriteFrame = styled.div`
-  width: 90%;
+  width: 50vw;
   margin: 20px 0 0 0;
   background: white;
   padding: 12px;
 `;
 
+const RadioBox = styled.div`
+  width: 100%;
+  text-align: center;
+`;
+
+const Layout1 = styled.div``;
+
+const Layout2 = styled.div`
+  display: flex;
+`;
+
+const Layout3 = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+`;
 export default PostWrite;

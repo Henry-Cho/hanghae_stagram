@@ -54,7 +54,6 @@ const Upload = (props) => {
         onChange={selectFile}
         disabled={uploading}
       />
-      <Button _onClick={uploadFB}>업로드하기</Button>
     </React.Fragment>
   );
 };

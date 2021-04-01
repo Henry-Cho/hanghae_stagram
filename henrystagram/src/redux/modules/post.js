@@ -47,6 +47,7 @@ const initialPost = {
   contents: "",
   comment_cnt: 0,
   insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+  layoutOption: "a",
 };
 
 const getPostFB = (is_more = false, size = 3) => {
@@ -111,30 +112,6 @@ const getPostFB = (is_more = false, size = 3) => {
         console.log(paging);
         dispatch(setPost(post_list, paging));
       });
-
-    return;
-    postDB.get().then((docs) => {
-      let post_list = [];
-      docs.forEach((doc) => {
-        let _post = doc.data();
-
-        let post = Object.keys(_post).reduce(
-          (acc, cur) => {
-            if (cur.indexOf("user_") !== -1) {
-              return {
-                ...acc,
-                user_info: { ...acc.user_info, [cur]: _post[cur] },
-              };
-            }
-            return { ...acc, [cur]: _post[cur] };
-          },
-          { id: doc.id, user_info: {} }
-        );
-        post_list.push(post);
-      });
-      console.log(post_list);
-      dispatch(setPost(post_list));
-    });
   };
 };
 
@@ -182,7 +159,7 @@ const deletePostFB = (post_id = null) => {
 // };
 // post_list.push(post);
 
-const addPostFB = (contents = "") => {
+const addPostFB = (contents = "", layoutOption) => {
   return function (dispatch, getState, { history }) {
     const postDB = firestore.collection("post");
 
@@ -197,6 +174,7 @@ const addPostFB = (contents = "") => {
       ...initialPost,
       contents: contents,
       insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+      layoutOption: layoutOption,
     };
 
     const _image = getState().image.preview;
