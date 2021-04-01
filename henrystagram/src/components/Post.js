@@ -10,37 +10,43 @@ const Post = (props) => {
   console.log(props);
 
   const dispatch = useDispatch();
-  const [is_like, setLike] = useState(false);
+  // const [is_like, setLike] = useState(false);
   const user_info = useSelector((state) => state.user.user);
   const user_list = useSelector((state) => state.like.user_list);
 
-  //const idx = user_list[props.id]
-
   const add_like = () => {
     dispatch(likeActions.addLikeFB(props.id));
-    setLike(true);
+    // setLike(true);
   };
 
   const delete_like = () => {
-    dispatch(likeActions.deleteLikeFB(props.id, user_list[props.id].id));
-    setLike(false);
+    console.log(user_list);
+    const index = user_list.findIndex((l) => {
+      return l.user_id === user_info.uid && l.post_id === props.post_id;
+    });
+    console.log(index, user_list[index]);
+    dispatch(likeActions.deleteLikeFB(props.id, user_list[index].id));
+    // setLike(false);
   };
 
   React.useEffect(() => {
+    if (!user_info) {
+      return;
+    }
+
     if (Object.keys(user_list).length === 0) {
-      dispatch(likeActions.getLikeFB(props.id, props.user_info.user_id));
+      dispatch(likeActions.getLikeFB(props.id, user_info.uid));
+      return;
     }
 
     if (!user_list[props.id]) {
       return;
     }
-    console.log(user_list[props.id], props.user_info.user_id);
-    if (user_list[props.id].user_id === props.user_info.user_id) {
-      setLike(true);
-    }
-  }, [user_list]);
 
-  console.log(user_list);
+    if (user_list[props.id].user_id === user_info.uid) {
+      // setLike(true);
+    }
+  }, [user_info]);
 
   return (
     // 일단 로그인 & 로그인 안 할 때 두가지 경우의 기본값을 설정해주자고!
@@ -84,7 +90,7 @@ const Post = (props) => {
         )}
       </PostInnerFrame>
       <PostInfo>
-        {is_like ? (
+        {props.is_like ? (
           <LikeButton onClick={delete_like}>💗</LikeButton>
         ) : (
           <LikeButton onClick={add_like}>🖤</LikeButton>

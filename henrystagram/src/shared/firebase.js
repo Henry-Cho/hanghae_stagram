@@ -4,13 +4,13 @@ import "firebase/firestore";
 import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzhGq9Yu1_3PyOSid_Y1b5k4NU5IjKZY4",
-  authDomain: "sparta-image-community.firebaseapp.com",
-  projectId: "sparta-image-community",
-  storageBucket: "sparta-image-community.appspot.com",
-  messagingSenderId: "805365268213",
-  appId: "1:805365268213:web:7ebb4fce5743ecd78b4fbc",
-  measurementId: "G-GRN8Q366NK",
+  apiKey: "AIzaSyAkAf474834rPo0IFomMGXG4PFAmNR8pAQ",
+  authDomain: "sparta-instagram.firebaseapp.com",
+  projectId: "sparta-instagram",
+  storageBucket: "sparta-instagram.appspot.com",
+  messagingSenderId: "106304362073",
+  appId: "1:106304362073:web:2bb772cacc772067c30348",
+  measurementId: "G-37YFNY9ZT7",
 };
 
 firebase.initializeApp(firebaseConfig);
